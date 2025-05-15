@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "./ui_widget.h"
+#include "stardelegate.h"
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -7,6 +8,7 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
 
+    StarDelegate *delegate = new StarDelegate(this);
 
     data.append({"Beginning Qt C++ GUI Development","Qt C++ GUI",2});
     data.append({"Qt Quick and QML For Beginners","QML",5});
@@ -18,6 +20,7 @@ Widget::Widget(QWidget *parent)
     //Set up row and column count information
     ui->tableWidget->setRowCount(data.size());
     ui->tableWidget->setColumnCount(data[0].size());
+    ui->tableWidget->setItemDelegate(delegate);
 
     for( int row = 0;  row < data.size(); ++row){
         QTableWidgetItem * item0 = new QTableWidgetItem(data[row][0].toString());

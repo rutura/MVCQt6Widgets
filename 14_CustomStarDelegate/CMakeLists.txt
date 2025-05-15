@@ -23,6 +23,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(14_CustomStarDelegate
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        stareditor.h stareditor.cpp
+        stardelegate.h stardelegate.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET 14_CustomStarDelegate APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
