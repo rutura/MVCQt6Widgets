@@ -22,8 +22,8 @@ PersonModel::~PersonModel(){
 void PersonModel::addPerson(Person* person){
     insertRows(persons.size(),1,QModelIndex());
     setData(index(persons.size()- 1, 0), person->names(), Qt::EditRole);
-    setData(index(persons.size()- 1, 1), person->favoriteColor(), Qt::EditRole);
-    setData(index(persons.size()- 1, 2), person->age(), Qt::EditRole);
+    setData(index(persons.size()- 1, 1), person->age(), Qt::EditRole);
+    setData(index(persons.size()- 1, 2), person->favoriteColor(), Qt::EditRole);
     setData(index(persons.size()- 1, 3), person->socicalScore(), Qt::EditRole);
 
 }
@@ -34,7 +34,7 @@ void PersonModel::addPerson(){
 }
 
 void PersonModel::addPerson(const QString& names, const int age){
-    Person *person=new Person(names,"yellowgreen",age, 3,this);
+    Person *person=new Person(names,"yellowgreen",age, 3);
     addPerson(person);
 }
 
