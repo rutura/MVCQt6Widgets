@@ -10,20 +10,83 @@
     <height>383</height>
    </rect>
   </property>   <property name="windowTitle">
-    <string>Folder Tree Explorer</string>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <string>File System Explorer</string>
+   </property>   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QTreeWidget" name="treeWidget"/>
+       <layout class="QHBoxLayout" name="navigationLayout">
+        <item>
+         <widget class="QPushButton" name="homeButton">
+          <property name="maximumWidth">
+           <number>30</number>
+          </property>
+          <property name="text">
+           <string>🏠</string>
+          </property>
+          <property name="toolTip">
+           <string>Go to Home Directory</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="upButton">
+          <property name="maximumWidth">
+           <number>30</number>
+          </property>
+          <property name="text">
+           <string>↑</string>
+          </property>
+          <property name="toolTip">
+           <string>Go Up One Level</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="pathComboBox">
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="addButton">
-        <property name="text">
-         <string>Add Folder</string>
+       <widget class="QTreeView" name="treeView">
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="addButton">
+          <property name="text">
+           <string>New Folder</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="toggleHiddenButton">
+          <property name="text">
+           <string>Show Hidden Files</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>

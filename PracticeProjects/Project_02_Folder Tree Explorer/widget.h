@@ -2,12 +2,14 @@
 #define WIDGET_H
 
 #include <QWidget>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
+#include <QFileSystemModel>
 #include <QMenu>
 #include <QAction>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QDir>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,15 +26,24 @@ public:
     ~Widget();
 
 private slots:
-    void addFolder();
+    void createNewFolder();
     void showContextMenu(const QPoint &pos);
-    void renameFolder();
-    void deleteFolder();
+    void renameItem();
+    void deleteItem();
+    void openFile();
+    void showProperties();
+    void toggleHiddenFiles();
+    void navigateUp();
+    void navigateHome();
+    void onPathChanged(const QString &path);
+    void updatePathDisplay(const QModelIndex &index);
 
 private:
     Ui::Widget *ui;
-    QTreeWidgetItem *createFolder(const QString &name);
-    void setupTreeWidget();
+    QFileSystemModel *fileModel;
+    void setupFileSystem();
     void setupContextMenu();
+    QString getSelectedPath() const;
+    bool confirmDelete(const QString &path);
 };
 #endif // WIDGET_H
