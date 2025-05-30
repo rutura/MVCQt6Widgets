@@ -15,16 +15,19 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
       // Store UI elements in member variables for easier access
     nameEdit = ui->nameEdit;
     subjectEdit = ui->subjectEdit;
     scoreEdit = ui->scoreEdit;
     tableWidget = ui->tableWidget;
     averageScoreLabel = ui->averageScoreLabel;
+
       // Connect signals and slots
     connect(ui->addStudentButton, &QPushButton::clicked, this, &MainWindow::on_addStudentButton_clicked);
     connect(ui->clearAllButton, &QPushButton::clicked, this, &MainWindow::on_clearAllButton_clicked);
     connect(tableWidget, &QTableWidget::itemChanged, this, &MainWindow::on_tableWidget_itemChanged);
+
       // Configure tableWidget properties
     tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -48,7 +51,7 @@ void MainWindow::on_addStudentButton_clicked()
     QString name = nameEdit->text().trimmed();
     QString subject = subjectEdit->text().trimmed();
     QString scoreText = scoreEdit->text().trimmed();
-    
+
     // Validate inputs
     if (name.isEmpty() || subject.isEmpty() || scoreText.isEmpty()) {
         QMessageBox::warning(this, "Validation Error", "All fields must be filled in.");
