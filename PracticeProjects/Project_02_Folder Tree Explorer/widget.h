@@ -2,6 +2,12 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QMenu>
+#include <QAction>
+#include <QInputDialog>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,10 +24,15 @@ public:
     ~Widget();
 
 private slots:
-    void on_pushButton_clicked();
+    void addFolder();
+    void showContextMenu(const QPoint &pos);
+    void renameFolder();
+    void deleteFolder();
 
 private:
     Ui::Widget *ui;
-    QStringList fruitList;
+    QTreeWidgetItem *createFolder(const QString &name);
+    void setupTreeWidget();
+    void setupContextMenu();
 };
 #endif // WIDGET_H
