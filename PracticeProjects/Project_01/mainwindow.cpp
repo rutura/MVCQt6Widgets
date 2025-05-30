@@ -24,9 +24,9 @@ MainWindow::MainWindow(QWidget *parent)
     averageScoreLabel = ui->averageScoreLabel;
 
       // Connect signals and slots
-    connect(ui->addStudentButton, &QPushButton::clicked, this, &MainWindow::on_addStudentButton_clicked);
-    connect(ui->clearAllButton, &QPushButton::clicked, this, &MainWindow::on_clearAllButton_clicked);
-    connect(tableWidget, &QTableWidget::itemChanged, this, &MainWindow::on_tableWidget_itemChanged);
+    connect(ui->addStudentButton, &QPushButton::clicked, this, &MainWindow::addStudent);
+    connect(ui->clearAllButton, &QPushButton::clicked, this, &MainWindow::clearStudents);
+    connect(tableWidget, &QTableWidget::itemChanged, this, &MainWindow::itemChanged);
 
       // Configure tableWidget properties
     tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -45,7 +45,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_addStudentButton_clicked()
+void MainWindow::addStudent()
 {
     // Get input values
     QString name = nameEdit->text().trimmed();
@@ -86,7 +86,7 @@ void MainWindow::on_addStudentButton_clicked()
     if (score < 40.0) {
         scoreItem->setBackground(QColor(255, 200, 200)); // Light red
     } else {
-        scoreItem->setBackground(QColor(Qt::white)); // Normal background
+        scoreItem->setBackground(QColor(Qt::green)); // Normal background
     }
     
     // Clear input fields
@@ -99,7 +99,7 @@ void MainWindow::on_addStudentButton_clicked()
     updateAverageScore();
 }
 
-void MainWindow::on_clearAllButton_clicked()
+void MainWindow::clearStudents()
 {
     // Ask for confirmation
     QMessageBox::StandardButton reply = QMessageBox::question(this, 
@@ -109,20 +109,20 @@ void MainWindow::on_clearAllButton_clicked()
     
     if (reply == QMessageBox::Yes) {
         // Temporarily disconnect itemChanged signal to prevent multiple updates
-        disconnect(tableWidget, &QTableWidget::itemChanged, this, &MainWindow::on_tableWidget_itemChanged);
+        disconnect(tableWidget, &QTableWidget::itemChanged, this, &MainWindow::itemChanged);
         
         // Clear all rows
         tableWidget->setRowCount(0);
         
         // Reconnect signal
-        connect(tableWidget, &QTableWidget::itemChanged, this, &MainWindow::on_tableWidget_itemChanged);
-        
+        connect(tableWidget, &QTableWidget::itemChanged, this, &MainWindow::itemChanged);
+
         // Reset average score
         averageScoreLabel->setText("Average Score: 0.0");
     }
 }
 
-void MainWindow::on_tableWidget_itemChanged(QTableWidgetItem *item)
+void MainWindow::itemChanged(QTableWidgetItem *item)
 {
     // Only process changes to the Score column (column 2)
     if (item && item->column() == 2) {

@@ -22,9 +22,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_addStudentButton_clicked();
-    void on_clearAllButton_clicked();
-    void on_tableWidget_itemChanged(QTableWidgetItem *item);
+    void addStudent();
+    void clearStudents();
+    void itemChanged(QTableWidgetItem *item);
     void updateAverageScore();
     bool validateScore(const QString &scoreText, double &score);
 
