@@ -22,9 +22,9 @@ Widget::Widget(QWidget *parent)
     dataFilePath = dataDir.filePath("data/inventory.json");
 
     setupModel();
-    setupDelegates();
     setupConnections();
     loadData();
+    setupDelegates();
 }
 
 Widget::~Widget()
