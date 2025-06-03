@@ -34,6 +34,11 @@ public:
 signals:
 private:
     QList<Person*> persons;
+    QString m_dataFilePath;
+
+    bool loadData();
+    bool saveData();
+    QString getDataFilePath() const;
 };
 
 #endif // PERSONMODEL_H

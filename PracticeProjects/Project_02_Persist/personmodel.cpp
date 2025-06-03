@@ -1,16 +1,91 @@
 #include "personmodel.h"
+#include <QFile>
+#include <QTextStream>
+#include <QDebug>
+#include <QCoreApplication>
+#include <QDir>
+
+QString PersonModel::getDataFilePath() const {
+    if(m_dataFilePath.isEmpty()) {
+        QString path = QCoreApplication::applicationDirPath();
+        return QDir(path).filePath("data/data.txt");
+    }
+    return m_dataFilePath;
+}
+
+bool PersonModel::loadData() {
+    QString filePath = getDataFilePath();
+    QDir().mkpath(QFileInfo(filePath).absolutePath()); // Create data directory if it doesn't exist
+    
+    QFile file(filePath);
+    if (!file.exists()) {
+        qDebug() << "Data file doesn't exist, will be created on first save";
+        return false;
+    }
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open data file for reading:" << file.errorString();
+        return false;
+    }
+
+    QTextStream in(&file);
+    qDeleteAll(persons);
+    persons.clear();
+
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QStringList fields = line.split('\t');
+        if (fields.size() >= 3) {
+            QString name = fields[0];
+            QString color = fields[1];
+            int age = fields[2].toInt();
+            persons.append(new Person(name, color, age));
+        }
+    }
+
+    file.close();
+    qDebug() << "Loaded" << persons.size() << "persons from file";
+    return true;
+}
+
+bool PersonModel::saveData() {
+    QString filePath = getDataFilePath();
+    QDir().mkpath(QFileInfo(filePath).absolutePath()); // Create data directory if it doesn't exist
+    
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open data file for writing:" << file.errorString();
+        return false;
+    }
+
+    QTextStream out(&file);
+    for (const Person* person : persons) {
+        out << person->names() << "\t"
+            << person->favoriteColor() << "\t"
+            << person->age() << "\n";
+    }
+
+    file.close();
+    qDebug() << "Saved" << persons.size() << "persons to file";
+    return true;
+}
 
 PersonModel::PersonModel(QObject *parent)
     : QAbstractListModel{parent}
 {
-
-    //Populate with initial data
-    persons.append (new Person("Jamie Lannister","red",33));
-    persons.append(new Person("Marry Lane","cyan",26));
-    persons.append(new Person("Steve Moors","yellow",44));
-    persons.append(new Person("Victor Trunk","dodgerblue",30));
-    persons.append(new Person("Ariel Geeny","blue",33));
-    persons.append(new Person("Knut Vikran","lightblue",26));
+    // Try to load data from file
+    if (!loadData()) {
+        qDebug() << "No data file found, creating initial data";
+        // Populate with initial data if file doesn't exist
+        persons.append(new Person("Jamie Lannister","red",33));
+        persons.append(new Person("Marry Lane","cyan",26));
+        persons.append(new Person("Steve Moors","yellow",44));
+        persons.append(new Person("Victor Trunk","dodgerblue",30));
+        persons.append(new Person("Ariel Geeny","blue",33));
+        persons.append(new Person("Knut Vikran","lightblue",26));
+        // Save initial data
+        saveData();
+    }
 }
 
 PersonModel::~PersonModel(){
@@ -34,6 +109,7 @@ void PersonModel::addPerson(Person* person){
     const int index = persons.size();
     if(insertRows(index, 1, QModelIndex())){
         persons[index] = person;
+        saveData();  // Save after adding
     }
 }
 
@@ -47,20 +123,10 @@ void PersonModel::addPerson(const QString& names, const int age){
     addPerson(person);
 }
 
-
-
-//Add or remove persons explicitly. This is not the best way to do it.
-/*
-void PersonModel::removePerson(QModelIndex index){
-    beginRemoveRows(QModelIndex(),index.row(), index.row());
-    persons.removeAt(index.row());
-    endRemoveRows();
-}
-*/
-
 void PersonModel::removePerson(QModelIndex index){
     if(index.isValid()){
         removeRows(index.row(), 1, QModelIndex());
+        saveData();  // Save after removing
     }
 }
 
@@ -116,11 +182,11 @@ bool PersonModel::setData(const QModelIndex &index, const QVariant &value, int r
             }
         }
         break;
-
-        if(somethingChanged){
-            emit dataChanged(index,index);
-            return true;
-        }
+    }
+    if(somethingChanged){
+        emit dataChanged(index,index);
+        saveData();  // Save after editing
+        return true;
     }
     return false;
 }
