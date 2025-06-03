@@ -67,9 +67,11 @@ void Widget::setupDelegates()
 {
     imageDelegate = new ImageDelegate(this);
     ratingDelegate = new RatingDelegate(this);
+    supplierDelegate = new SupplierDelegate(model->getSupplierList(), this);
 
     ui->inventoryTableView->setItemDelegateForColumn(InventoryModel::ProductImage, imageDelegate);
     ui->inventoryTableView->setItemDelegateForColumn(InventoryModel::Rating, ratingDelegate);
+    ui->inventoryTableView->setItemDelegateForColumn(InventoryModel::Supplier, supplierDelegate);
 }
 
 void Widget::setupConnections()
@@ -148,6 +150,9 @@ void Widget::onAddItem()
         QMessageBox::warning(this, tr("Error"), tr("A product with this name already exists."));
         return;
     }
+    
+    // Make sure supplier delegate has latest supplier list
+    supplierDelegate->setSuppliers(model->getSupplierList());
 
     item.quantity = 0;
     item.supplier = model->getSupplierList().value(0); // Default to first supplier
@@ -199,6 +204,7 @@ void Widget::onManageSuppliers()
             supplier = supplier.trimmed();
         }
         model->setSupplierList(suppliers);
+        supplierDelegate->setSuppliers(suppliers);
     }
 }
 

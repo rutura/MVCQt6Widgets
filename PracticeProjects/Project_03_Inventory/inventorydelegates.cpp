@@ -171,3 +171,53 @@ QSize RatingDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelI
     Q_UNUSED(index);
     return QSize(MaxStars * StarSize + 10, StarSize + 6); // Add some padding
 }
+
+// Supplier Delegate Implementation
+SupplierDelegate::SupplierDelegate(const QStringList &suppliers, QObject *parent)
+    : QStyledItemDelegate(parent), supplierList(suppliers)
+{
+}
+
+QWidget *SupplierDelegate::createEditor(QWidget *parent,
+                                      const QStyleOptionViewItem &option,
+                                      const QModelIndex &index) const
+{
+    Q_UNUSED(option);
+    Q_UNUSED(index);
+    
+    QComboBox *editor = new QComboBox(parent);
+    editor->addItems(supplierList);
+    editor->setFrame(false);
+    return editor;
+}
+
+void SupplierDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+    QString currentSupplier = index.data(Qt::EditRole).toString();
+    QComboBox *comboBox = static_cast<QComboBox*>(editor);
+    
+    int idx = comboBox->findText(currentSupplier);
+    if (idx >= 0) {
+        comboBox->setCurrentIndex(idx);
+    }
+}
+
+void SupplierDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+                                  const QModelIndex &index) const
+{
+    QComboBox *comboBox = static_cast<QComboBox*>(editor);
+    model->setData(index, comboBox->currentText(), Qt::EditRole);
+}
+
+void SupplierDelegate::updateEditorGeometry(QWidget *editor,
+                                          const QStyleOptionViewItem &option,
+                                          const QModelIndex &index) const
+{
+    Q_UNUSED(index);
+    editor->setGeometry(option.rect);
+}
+
+void SupplierDelegate::setSuppliers(const QStringList &suppliers)
+{
+    supplierList = suppliers;
+}

@@ -42,6 +42,7 @@ private:
     InventoryModel *model;
     ImageDelegate *imageDelegate;
     RatingDelegate *ratingDelegate;
+    SupplierDelegate *supplierDelegate;
     ProductDetailsWidget *detailsWidget;
     QString dataFilePath;
 };
