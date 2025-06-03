@@ -124,7 +124,7 @@ void Widget::onDescriptionChanged(const QString &newDescription)
 void Widget::loadData()
 {
     if (model->loadFromFile(dataFilePath)) {
-        QMessageBox::information(this, tr("Success"), tr("Data loaded successfully."));
+        qDebug() << "Data loaded successfully from" << dataFilePath;
         if (ui->inventoryTableView->model()->rowCount() > 0) {
             ui->inventoryTableView->setCurrentIndex(model->index(0, 0));
         }
@@ -134,7 +134,7 @@ void Widget::loadData()
 void Widget::saveData()
 {
     if (!model->saveToFile(dataFilePath)) {
-        QMessageBox::warning(this, tr("Error"), tr("Failed to save data."));
+        qDebug() << "Failed to save data to" << dataFilePath;
     }
 }
 
