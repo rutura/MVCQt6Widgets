@@ -17,6 +17,13 @@ set(PROJECT_SOURCES
         widget.cpp
         widget.h
         widget.ui
+        inventoryitem.h
+        inventorymodel.h
+        inventorymodel.cpp
+        inventorydelegates.h
+        inventorydelegates.cpp
+        productdetailswidget.h
+        productdetailswidget.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
