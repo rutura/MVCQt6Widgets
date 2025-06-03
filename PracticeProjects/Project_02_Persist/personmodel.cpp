@@ -18,12 +18,23 @@ PersonModel::~PersonModel(){
 }
 
 
+//Add or remove persons explicitly. This is not the best way to do it.
+/*
+void PersonModel::addPerson( Person* person){
+    //Figure out where to add the person: they will go at the end
+    const int index = persons.size();
+    beginInsertRows(QModelIndex(), index, index);
+    persons.append(person);
+    endInsertRows();
+}
+*/
+
 //Go through insertRows and removeRows
 void PersonModel::addPerson(Person* person){
-    insertRows(persons.size(),1,QModelIndex());
-    setData(index(persons.size()- 1), person->names(), NamesRole);
-    setData(index(persons.size()- 1), person->favoriteColor(), FavoriteColorRole);
-    setData(index(persons.size()- 1), person->age(), AgeRole);
+    const int index = persons.size();
+    if(insertRows(index, 1, QModelIndex())){
+        persons[index] = person;
+    }
 }
 
 void PersonModel::addPerson(){
@@ -36,6 +47,16 @@ void PersonModel::addPerson(const QString& names, const int age){
     addPerson(person);
 }
 
+
+
+//Add or remove persons explicitly. This is not the best way to do it.
+/*
+void PersonModel::removePerson(QModelIndex index){
+    beginRemoveRows(QModelIndex(),index.row(), index.row());
+    persons.removeAt(index.row());
+    endRemoveRows();
+}
+*/
 
 void PersonModel::removePerson(QModelIndex index){
     if(index.isValid()){
@@ -55,16 +76,8 @@ QVariant PersonModel::data(const QModelIndex & index, int role) const {
 
     Person* person = persons[index.row()];
 
-    if(role == Qt::DisplayRole || role == Qt::ToolTipRole || role == Qt::EditRole || role == NamesRole){
+    if(role == Qt::DisplayRole || role == Qt::ToolTipRole || role == Qt::EditRole){
         return person->names();
-    }
-
-    if(role == FavoriteColorRole){
-        return person->favoriteColor();
-    }
-
-    if(role == AgeRole){
-        return person->age();
     }
 
     return QVariant();
@@ -95,10 +108,7 @@ bool PersonModel::setData(const QModelIndex &index, const QVariant &value, int r
     bool somethingChanged {false};
 
     switch (role) {
-        case Qt::EditRole:
-        case NamesRole:
-
-        {
+        case Qt::EditRole:{
 
             if(person->names() != value.toString()){
                 person->setNames(value.toString());
@@ -106,25 +116,6 @@ bool PersonModel::setData(const QModelIndex &index, const QVariant &value, int r
             }
         }
         break;
-
-        case AgeRole:
-        {
-
-            if(person->age() != value.toInt()){
-                person->setAge(value.toInt());
-                somethingChanged = true;
-            }
-        }
-        break;
-
-
-        case FavoriteColorRole:
-        {
-            if(person->favoriteColor() != value.toString()){
-                person->setFavoriteColor(value.toString());
-                somethingChanged = true;
-            }
-        }
 
         if(somethingChanged){
             emit dataChanged(index,index);
@@ -147,7 +138,7 @@ bool PersonModel::insertRows(int row, int count, const QModelIndex& index) {
     beginInsertRows(QModelIndex(), row, row + count - 1);
 
     for(int i = 0; i < count; ++i){
-        persons.insert(row, new Person());  //insertRows will create a new blank person.
+        persons.insert(row, nullptr); // Insert a placeholder instead of a true Person.
     }
 
     endInsertRows();
@@ -163,15 +154,6 @@ bool PersonModel::removeRows(int row, int count, const QModelIndex& index) {
     endRemoveRows();
     return true;
 }
-
-QHash<int, QByteArray> PersonModel::roleNames() const {
-    QHash<int, QByteArray> roles;
-    roles[NamesRole] = "names";
-    roles[FavoriteColorRole] = "favoritecolor";
-    roles[AgeRole] = "age";
-    return roles;
-}
-
 
 
 
