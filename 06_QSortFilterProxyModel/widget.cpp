@@ -27,7 +27,7 @@ Widget::~Widget()
 void Widget::on_listView_clicked(const QModelIndex &index)
 {
     QPixmap pixmap(ui->label->size());
-    auto colorString = model->data(index, Qt::DisplayRole).toString();
+    auto colorString = proxyModel->data(index, Qt::DisplayRole).toString();
     pixmap.fill(QColor(colorString));
     ui->label->setPixmap(pixmap);
 
